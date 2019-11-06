@@ -1,0 +1,160 @@
+main {
+    position: relative;
+}
+
+section.container {
+    padding: 0 15px;
+    /*max-width: 70%;*/
+    /*margin: 0 auto;*/
+}
+
+header {
+    min-height: 250px;
+    padding: 20px 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+header h1 {
+    color: 	#2bb4a1;
+    font-size: 40px;
+    line-height: 1.1;
+    margin-bottom: 15px;
+}
+
+header p {
+    color: #ffffff;
+}
+
+div.search {
+    display: flex;
+    max-width: 90%;
+    margin: 0 auto;
+}
+
+.holder {
+    background: rgb(198, 196, 196);
+    min-width: 90%;
+    border-radius: 10px;
+}
+
+.holder-active {
+    border-radius: 10px 10px 0 0;
+}
+
+.AutoCompleteText {
+    position: relative;
+    border-radius: 10px;
+    background: rgb(211,211,211);
+}
+
+.AutoCompleteText input {
+    padding: 10px 15px;
+    width: 100%;
+    min-height: 40px;
+    border: none;
+    border-radius: 10px;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 14px;
+    color: rgba(0,0,0,0.73);
+    outline: none;
+}
+
+.AutoCompleteText ul {
+    position: absolute;
+    width: 100%;
+    list-style-type: none;
+    text-align: left;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background: border-box rgb(198, 196, 196);
+    border-radius: 0 0 10px 10px;
+}
+
+.AutoCompleteText ul::before {
+    content: '';
+}
+
+.AutoCompleteText li {
+    padding: 10px 15px;
+    cursor: pointer;
+    border-bottom: 1px solid #F7F7F7;
+}
+.AutoCompleteText li:last-child {
+    border-bottom: none;
+}
+
+.AutoCompleteText li:hover {
+    background-color: rgb(232, 231, 231);
+}
+
+.AutoCompleteText li span .highlight {
+    background-color: #FFFF00;
+    font-weight: 700;
+}
+
+button.search-btn {
+    margin-left: 15px;
+    height: 40px;
+    background-color: #2bb4a1;
+    color: #ffffff;
+    border: 1px solid #71bc78;
+    border-radius: 50%;
+    padding: 10px;
+    text-decoration: none;
+    outline: none;
+    cursor: pointer;
+    -webkit-transition-duration: 0.4s; /* Safari */
+    transition-duration: 0.4s;
+}
+
+button.search-btn:hover {
+    background-color: #145b51;
+    color: #ffffff;
+}
+
+section.results {
+    max-width: 80%;
+    margin: 30px auto;
+    background-color: #F7F7F7;
+    text-align: left;
+    border-radius: 20px;
+}
+
+div.card {
+    padding: 10px 20px;
+    min-height: 90px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    border-bottom: 1px solid rgb(188, 188, 188);
+}
+
+div.card:last-child {
+    border-bottom: none;
+}
+
+div.card > div > span {
+    font-weight: 700;
+}
+
+div.card > div:first-child > span {
+    font-size: 18px;
+    color: #8b0000;
+}
+
+div.no-results {
+    color: white;
+    margin-top: 20px;
+}
+
+@media (min-width: 576px) {
+    header {
+        min-height: 200px;
+    }
+    div.search {
+        display: flex;
+        max-width: 70%;
+    }
+}
