@@ -1,6 +1,6 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+#Auto Complete Component
 
-#Deloitte AutoComplete Assignment 
+Built from scratch with React.js
 
 ## Available Scripts
 
