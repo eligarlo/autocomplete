@@ -1,4 +1,4 @@
-#Auto Complete Component
+# Auto Complete Component
 
 Built from scratch with React.js
 
