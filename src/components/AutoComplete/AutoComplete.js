@@ -190,10 +190,12 @@ export default class AutoComplete extends React.Component{
      * Runs the search
      */
     onSearchClicked = () => {
-        const { userInput } = this.state;
+        const { suggestions, userInput } = this.state;
+        const selectedSuggestions = suggestions;
         if (userInput.length > 1) {
             this.clearSuggestions();
             this.setState(() => ({
+                selectedSuggestions,
                 renderResults: true,
             }));
         }
