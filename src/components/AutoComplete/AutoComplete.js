@@ -26,10 +26,10 @@ export default class AutoComplete extends React.Component{
      * Resets the suggestions and maxSuggestions array
      */
     clearSuggestions = () => {
-        this.setState(() => ({
+        this.setState({
             suggestions: [],
             maxSuggestions: [],
-        }));
+        });
     };
 
     /**
@@ -39,18 +39,28 @@ export default class AutoComplete extends React.Component{
      */
     onTextChanged = (e) => {
         const userInput = e.target.value;
-        const suggestions = this.people.filter(person => {
+
+        const nameSuggestions = this.people.filter(person => {
+           if (userInput.length > 1) {
+               return person.name.toLowerCase().includes(userInput.toLowerCase());
+           }
+        });
+
+        const usernameSuggestions = this.people.filter(person => {
             if (userInput.length > 1) {
-                return person.name.toLowerCase().includes(userInput.toLowerCase());
+               return person.username.toLowerCase().includes(userInput.toLowerCase());
             }
         });
+
+        const suggestions = [...new Set([...nameSuggestions, ...usernameSuggestions])];
+
         const maxSuggestions = suggestions.slice(0, 5);
 
-        this.setState(() => ({
+        this.setState({
             suggestions,
             maxSuggestions,
             userInput,
-        }));
+        });
     };
 
     /**
@@ -58,17 +68,23 @@ export default class AutoComplete extends React.Component{
      * @param person
      * @returns component
      */
-    nameHighlighted = (person) => {
+    searchHighlighted = (person) => {
         const { userInput } = this.state;
-        const inputMatchesNamePos = person.name.toLowerCase().indexOf(userInput.toLowerCase());
-        const nameArr = person.name.split('');
+        const inputMatchesNamePos = person.toLowerCase().indexOf(userInput.toLowerCase());
+        if (inputMatchesNamePos === -1) {
+            return (
+                <span>
+                    {person}
+                </span>
+            );
+        }
+        const nameArr = person.split('');
         const beforeBold = nameArr.slice(0, inputMatchesNamePos);
         const afterBold = nameArr.slice(inputMatchesNamePos + userInput.length, nameArr.length);
 
         // Name highlighted from the beginning
         if (inputMatchesNamePos === 0) {
             const bold = nameArr.slice(0,userInput.length);
-            const afterBold = nameArr.slice(userInput.length, nameArr.length);
             return (
                 <span>
                     <span className="highlight">{bold}</span>
@@ -83,7 +99,8 @@ export default class AutoComplete extends React.Component{
                 <span>
                     {beforeBold}
                     <span className="highlight">{bold}</span>
-                    {afterBold}</span>
+                    {afterBold}
+                </span>
             )
         }
         // Name highlighted at the end
@@ -110,31 +127,30 @@ export default class AutoComplete extends React.Component{
         // User pressed esc key
         if (e.keyCode === 27) {
             this.clearSuggestions();
-            this.setState(() => ({
+            this.setState({
                 userInput: '',
                 activeSuggestion: -1,
-            }));
+            });
         }
         // User pressed enter key
         if (e.keyCode === 13) {
-            const selectedSuggestions = suggestions;
             if (activeSuggestion === -1) {
                 this.clearSuggestions();
-                this.setState(() => ({
-                    selectedSuggestions,
+                this.setState({
+                    selectedSuggestions: suggestions,
                     userInput,
                     renderResults: true,
-                }));
+                });
             } else {
                 for (const person of maxSuggestions) {
                     if (maxSuggestions[activeSuggestion].id === person.id) {
                         this.clearSuggestions();
-                        this.setState(() => ({
+                        this.setState({
                             selectedSuggestions: [person],
                             userInput: maxSuggestions[activeSuggestion].name,
                             activeSuggestion: -1,
                             renderResults: true,
-                        }));
+                        });
                     }
                 }
             }
@@ -142,25 +158,25 @@ export default class AutoComplete extends React.Component{
         // User pressed up arrow key
         else if (e.keyCode === 38) {
             if (activeSuggestion === -1) {
-                this.setState(() => ({
+                this.setState({
                     activeSuggestion: maxSuggestions.length - 1
-                }));
+                });
             } else {
-                this.setState(() => ({
+                this.setState({
                     activeSuggestion: activeSuggestion - 1
-                }));
+                });
             }
         }
         // User pressed down arrow key
         else if (e.keyCode === 40) {
             if (activeSuggestion === maxSuggestions.length -1) {
-                this.setState(() => ({
+                this.setState({
                     activeSuggestion: - 1
-                }));
+                });
             } else {
-                this.setState(() => ({
+                this.setState({
                     activeSuggestion: activeSuggestion + 1
-                }));
+                });
             }
         }
 
@@ -176,12 +192,12 @@ export default class AutoComplete extends React.Component{
         for (const person of maxSuggestions) {
             if (person.id === id) {
                 this.clearSuggestions();
-                this.setState(() => ({
+                this.setState({
                     selectedSuggestions: [person],
                     userInput: name,
                     activeSuggestion: -1,
                     renderResults: true,
-                }));
+                });
             }
         }
     };
@@ -194,10 +210,10 @@ export default class AutoComplete extends React.Component{
         const selectedSuggestions = suggestions;
         if (userInput.length > 1) {
             this.clearSuggestions();
-            this.setState(() => ({
+            this.setState({
                 selectedSuggestions,
                 renderResults: true,
-            }));
+            });
         }
     };
 
@@ -205,12 +221,16 @@ export default class AutoComplete extends React.Component{
      * Close the suggestions when input losses focus
      */
     onBlur = () => {
-        setTimeout(() => {
-            this.setState(() => ({
-                maxSuggestions: [],
-            }));
-
-        },100);
+        const root = document.querySelector('#root');
+        const holder = document.querySelector('#holder');
+        root.addEventListener('click', e => {
+            if (!holder.contains(e.target)) {
+                console.log(e.target);
+                this.setState({
+                    maxSuggestions: [],
+                });
+            }
+        });
     };
 
     /**
@@ -229,19 +249,6 @@ export default class AutoComplete extends React.Component{
     };
 
     /**
-     * Updates the bg color of the div holding the input and suggestions list
-     * @returns {string}
-     */
-    setBgHolder = () => {
-        const { maxSuggestions } = this.state;
-        let className = 'holder';
-        if (maxSuggestions.length > 0) {
-            className += ' holder-active'
-        }
-        return className;
-    };
-
-    /**
      * Renders the ul for the maxSuggestions array
      * @returns component
      */
@@ -252,7 +259,8 @@ export default class AutoComplete extends React.Component{
                 <ul>
                     {maxSuggestions.map((person, index) =>
                         <li id={person.id} onClick={() => this.onSuggestionSelected(person.name, person.id)} key={person.id} style={this.getOnHover(index)}>
-                            {this.nameHighlighted(person)}
+                            <div>{this.searchHighlighted(person.name)}</div>
+                            <div>{this.searchHighlighted(person.username)}</div>
                         </li>
                     )}
                 </ul>
@@ -292,7 +300,7 @@ export default class AutoComplete extends React.Component{
      * @returns component
      */
     render() {
-        const { userInput, renderResults } = this.state;
+        const { userInput, renderResults, maxSuggestions } = this.state;
 
         return (
             <main>
@@ -302,7 +310,7 @@ export default class AutoComplete extends React.Component{
                         <p>{!renderResults ? 'Click on the search bar to learn our suggestions' : ''}</p>
                     </header>
                     <div className="search" >
-                        <div className={this.setBgHolder()}>
+                        <div id="holder" className={(maxSuggestions.length > 0) ? 'holder holder-active' : 'holder'}>
                             <div className="AutoCompleteText" onKeyDown={this.onKeyPressed}>
                                 <input placeholder="Search..." type="text" value={userInput} onBlur={this.onBlur} onFocus={this.onTextChanged} onChange={this.onTextChanged}/>
                                 {this.renderSuggestions()}
