@@ -1,5 +1,6 @@
 import React from 'react';
 import './AutoComplete.css';
+import myService from '../../services/directory';
 
 export default class AutoComplete extends React.Component{
     constructor (props) {
@@ -55,6 +56,8 @@ export default class AutoComplete extends React.Component{
         const suggestions = [...new Set([...nameSuggestions, ...usernameSuggestions])];
 
         const maxSuggestions = suggestions.slice(0, 5);
+
+        myService();
 
         this.setState({
             suggestions,
